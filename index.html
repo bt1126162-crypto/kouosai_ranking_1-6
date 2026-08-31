@@ -172,14 +172,14 @@
             </tr>
         </thead>
         <tbody id="ranking-body">
-            </tbody>
+            <!-- データがここに自動で挿入されます -->
+        </tbody>
     </table>
 
     <div id="loading-msg" class="loading">ランキングデータを読み込み中...</div>
 </div>
 
 <script>
-  // ★さっき発行した新しいスプレッドシートのウェブアプリURLをここにセット！
   const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxu_c35sE8gFH-r7MXEpWz6cjh86cO_RyOkPJSbVOTV0OfRoO6pEm-ABlIc-KLvKFn0/exec';
 
   async function fetchRanking() {
@@ -191,17 +191,19 @@
       data.sort((a, b) => a.clearTime.localeCompare(b.clearTime));
 
       const tbody = document.getElementById('ranking-body');
+      const loadingMsg = document.getElementById('loading-msg');
       tbody.innerHTML = '';
 
       // 上位10件までを表示
       const top10 = data.slice(0, 10);
 
       if (top10.length === 0) {
-        document.getElementById('loading-msg').textContent = 'まだクリアデータがありません';
+        loadingMsg.textContent = 'まだクリアデータがありません';
+        loadingMsg.style.display = 'block';
         return;
       }
 
-      document.getElementById('loading-msg').style.display = 'none';
+      loadingMsg.style.display = 'none';
 
       top10.forEach((row, index) => {
         let rankClass = '';
@@ -224,7 +226,9 @@
 
     } catch (err) {
       console.log('取得エラー', err);
-      document.getElementById('loading-msg').textContent = 'ランキングの読み込みに失敗しました';
+      const loadingMsg = document.getElementById('loading-msg');
+      loadingMsg.textContent = 'ランキングの読み込みに失敗しました';
+      loadingMsg.style.display = 'block';
     }
   }
 
